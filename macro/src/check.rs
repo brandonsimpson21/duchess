@@ -186,6 +186,10 @@ impl ClassInfo {
             }
         }
 
+        if self.kind != info.kind {
+            info.compare_flags(self.flags, info.flags, &mut push_error_message);
+        }
+
         Ok(())
     }
 
