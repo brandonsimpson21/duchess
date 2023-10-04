@@ -170,6 +170,22 @@ impl ClassInfo {
             }
         }
 
+        for f in &self.fields {
+            let mut push_field_error_message = |msg: String| {
+                push_error_message(format!("{msg}, which appears in field `{}`", f.name,));
+            };
+            // if fields have the same name ensure they have the same flags, if we cant find a field in
+            //the reflected class with the same name then we error
+            if let Some(reflected_f) = info.fields.iter().find(|info_f| info_f.name == f.name) {
+                self.compare_flags(f.flags, reflected_f.flags, &mut push_field_error_message);
+            } else {
+                push_error_message(format!(
+                    "field `{}` does not match any of the fields in the reflected class",
+                    f.name,
+                ));
+            }
+        }
+
         Ok(())
     }
 
